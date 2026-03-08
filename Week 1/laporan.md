@@ -2,7 +2,7 @@
 
 ## Tujuan Praktikum
 Praktikum ini bertujuan untuk:
-1. Menginstal dan mengkonfigurasi Python sebagai bahasa pemrograman untuk AI
+1. Menginstal dan mengkonfigurasi Python sebagai bahasa pemrograman
 2. Menginstal dan menggunakan Wireshark untuk analisis network traffic
 3. Memahami cara kerja packet capture dan analisis protokol jaringan
 
@@ -104,14 +104,14 @@ Capture ini menunjukkan network layer yang lebih lengkap, termasuk:
 
 Dari praktikum ini, kami telah berhasil:
 
-✅ **Menginstal Python** - Bahasa pemrograman utama untuk AI dan Data Science
+✅ **Menginstal Python** - Bahasa pemrograman utama 
 ✅ **Menginstal Wireshark** - Tool profesional untuk network analysis
 ✅ **Memahami Network Protocols** - HTTP, TCP, UDP, DNS, ARP, ICMP
 ✅ **Melakukan Packet Capture** - Menangkap dan menganalisis traffic jaringan real-time
 ✅ **Interpretasi Packet Data** - Membaca dan memahami informasi yang ditampilkan Wireshark
 
 Kedua aplikasi ini merupakan tools fundamental untuk:
-- **Python**: Mengembangkan aplikasi AI dan machine learning
+- **Python**: Mengembangkan aplikasi 
 - **Wireshark**: Network troubleshooting, security analysis, dan pembelajaran jaringan
 
 ---
