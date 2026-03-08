@@ -1,1 +1,1 @@
-# Praktikum-Dasar-Kecerdasan-AI
+# Praktikum-JARINGAN-KOMPUTER
