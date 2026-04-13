@@ -1,4 +1,4 @@
-# Laporan Praktikum Jaringan Komputer - Week 2
+# Laporan Praktikum Jaringan Komputer - Modul 3
 ## HTTP Protocol Analysis
 
 ---
@@ -70,7 +70,7 @@ Berikut adalah langkah-langkah yang dilakukan selama praktikum Modul 3:
 ### 4.1 Basic HTTP GET/Response
 Pada percobaan pertama, diakses file HTML sederhana. Wireshark menangkap dua pesan utama: HTTP GET dari klien dan HTTP OK dari server.
 
-![Basic HTTP GET](1.png)
+![Basic HTTP GET](Asset/1.png)
 *Gambar 1: Tangkapan layar Wireshark menunjukkan paket HTTP GET (No. 805) dan Response 200 OK (No. 1125).*
 
 **Analisis:**
@@ -81,7 +81,7 @@ Pada percobaan pertama, diakses file HTML sederhana. Wireshark menangkap dua pes
 ### 4.2 HTTP Conditional GET
 Pada percobaan ini, dilakukan verifikasi mekanisme caching pada browser saat mengakses file yang sama berulang kali.
 
-![Conditional GET](2.png)
+![Conditional GET](Asset/2.png)
 *Gambar 2: Tangkapan layar Wireshark menunjukkan request HTTP GET untuk file2.html.*
 
 **Analisis:**
@@ -91,7 +91,7 @@ Pada percobaan ini, dilakukan verifikasi mekanisme caching pada browser saat men
 ### 4.3 Retrieving Long Documents
 Mengakses dokumen yang cukup panjang sehingga tidak muat dalam satu paket MTU.
 
-![Long Document](3.png)
+![Long Document](Asset/3.png)
 *Gambar 3: Tangkapan layar Wireshark menunjukkan segmentasi TCP (Continuation).*
 
 **Analisis:**
@@ -101,7 +101,7 @@ Mengakses dokumen yang cukup panjang sehingga tidak muat dalam satu paket MTU.
 ### 4.4 HTML Documents dengan Embedded Objects
 Mengakses halaman HTML yang mengandung objek gambar tambahan di dalamnya.
 
-![Embedded Objects](4.png)
+![Embedded Objects](Asset/4.png)
 *Gambar 4: Tangkapan layar Wireshark menunjukkan multiple HTTP GET requests.*
 
 **Analisis:**
@@ -111,7 +111,7 @@ Mengakses halaman HTML yang mengandung objek gambar tambahan di dalamnya.
 ### 4.5 HTTP Authentication
 Mengakses halaman yang dilindungi oleh mekanisme autentikasi dasar.
 
-![HTTP Authentication](5.png)
+![HTTP Authentication](Asset/5.png)
 *Gambar 5: Tangkapan layar Wireshark menunjukkan proses autentikasi.*
 
 **Analisis:**
