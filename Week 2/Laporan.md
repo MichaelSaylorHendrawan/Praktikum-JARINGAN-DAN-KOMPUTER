@@ -1,4 +1,4 @@
-# Laporan Praktikum Jaringan Komputer - Modul 3
+# Laporan Praktikum Jaringan Komputer - Week 2
 ## HTTP Protocol Analysis
 
 ---
