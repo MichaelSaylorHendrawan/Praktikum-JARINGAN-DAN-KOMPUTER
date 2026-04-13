@@ -27,20 +27,20 @@ DNS (Domain Name System) adalah protokol krusial di internet yang berfungsi seba
 Perintah `nslookup` digunakan untuk melakukan query ke DNS server. Alat ini sangat berguna untuk mendiagnosis masalah resolusi nama dan melihat informasi record tertentu pada sebuah domain.
 
 #### a. nslookup www.mit.edu
-![nslookup www.mit.edu](assets/Screenshot%202026-04-13%20205033.png)
+![nslookup www.mit.edu](Asset/1.png)
 **Analisis:**
 - Permintaan ditangani oleh server DNS lokal dengan alamat `fe80::1` (gpon.net).
 - Hasil menunjukkan bahwa `www.mit.edu` adalah sebuah alias (CNAME) yang merujuk pada `www.mit.edu.edgekey.net` dan kemudian ke `e9566.dscb.akamaiedge.net`.
 - Alamat IPv4 yang didapatkan untuk host tersebut adalah **23.0.173.210**.
 
 #### b. nslookup –type=NS mit.edu
-![nslookup –type=NS mit.edu](assets/Screenshot%202026-04-13%20205047.png)
+![nslookup –type=NS mit.edu](Asset/2.png)
 **Analisis:**
 - Perintah ini secara spesifik meminta **Name Server (NS)** record dari MIT.
 - Terdapat beberapa server otoritatif yang mengelola domain ini, seperti `asia1.akam.net`, `ns1-173.akam.net`, dan lainnya. Status "Non-authoritative answer" menunjukkan data diambil dari cache resolver lokal.
 
 #### c. Query ke DNS Server Spesifik (Google DNS)
-![Query ke DNS Server Tertentu](assets/Screenshot%202026-04-13%20205059.png)
+![Query ke DNS Server Tertentu](Asset/3.png)
 **Analisis:**
 - Pada perintah `nslookup mit.edu 8.8.8.8`, query dipaksa untuk dikirim ke server Google (`8.8.8.8`), bukan ke server DNS default.
 - Hasil menunjukkan alamat IP MIT dari perspektif server Google adalah **23.15.150.186**.
@@ -52,13 +52,13 @@ Perintah `nslookup` digunakan untuk melakukan query ke DNS server. Alat ini sang
 - Hostname tersebut memiliki alias `new.snu.ac.kr` dengan alamat IPv4 **147.46.10.129**.
 
 #### e. Query DNS Otoritatif (NS Record - ox.ac.uk)
-![Query DNS Otoritatif](assets/Screenshot%202026-04-13%20205108.png)
+![Query DNS Otoritatif](Asset/5.png)
 **Analisis:**
 - Mencari record NS untuk University of Oxford (`ox.ac.uk`).
 - Domain ini dikelola oleh 6 nameserver otoritatif, mulai dari `dns0.ox.ac.uk` hingga `auth6.dns.ox.ac.uk`.
 
 #### f. Query MX Record (Mail Server - ox.ac.uk)
-![Query MX Record](assets/Screenshot%202026-04-13%20205117.png)
+![Query MX Record](Asset/6.png)
 **Analisis:**
 - Parameter `-type=MX` digunakan untuk mencari server penanganan email.
 - Didapatkan server mail `oxforduni.in.tmes.trendmicro.eu` dengan **preference = 4**. Angka ini menunjukkan tingkat prioritas server tersebut dalam menerima email masuk.
@@ -69,7 +69,7 @@ Perintah `nslookup` digunakan untuk melakukan query ke DNS server. Alat ini sang
 Perintah `ipconfig` memberikan gambaran mengenai konfigurasi jaringan yang terpasang pada komputer klien.
 
 #### a. ipconfig /all
-![ipconfig /all](assets/Screenshot%202026-04-13%20205134.png)
+![ipconfig /all](Asset/7.png)
 **Analisis:**
 - **Host Name:** Laptop bernama `Owen`.
 - **Physical Address (MAC):** `08-8F-C3-46-69-B2`.
@@ -81,8 +81,8 @@ Perintah `ipconfig` memberikan gambaran mengenai konfigurasi jaringan yang terpa
 ### 3. Tracing DNS dengan Wireshark
 
 #### a. Tracing DNS Dasar (www.mit.edu)
-![Tracing DNS 1](assets/14.png)
-![Tracing DNS 2](assets/15.png)
+![Tracing DNS 1](Asset/15.png)
+![Tracing DNS 2](Asset/16.png)
 
 **Pertanyaan dan Jawaban:**
 1. **Pesan dikirim melalui UDP atau TCP?**
@@ -97,8 +97,8 @@ Perintah `ipconfig` memberikan gambaran mengenai konfigurasi jaringan yang terpa
    > Terdapat **3 jawaban** (Frame 307). Isinya adalah dua alias (CNAME) dan satu alamat IPv4 (**23.217.163.122**).
 
 #### b. Query ke DNS Server Spesifik (www.aiit.or.kr via 8.8.8.8)
-![Tracing Spesifik 1](assets/16.png)
-![Tracing Spesifik 2](assets/17.png)
+![Tracing Spesifik 1](Asset/17.png)
+![Tracing Spesifik 2](Asset/18.png)
 
 **Analisis Wireshark:**
 1. **Ke alamat IP manakah pesan dikirim?**
