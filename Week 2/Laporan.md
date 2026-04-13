@@ -1,126 +1,133 @@
-# Laporan Praktikum Jaringan Komputer - Modul 2
-## Pengenalan Tools (Wireshark Basics)
+# Laporan Praktikum Jaringan Komputer - Modul 3
+## HTTP Protocol Analysis
+
+---
 
 ### Identitas Praktikan
 | Item | Keterangan |
 |------|------------|
 | **Nama** | Zain Ahmad Suraiban |
-| **NIM** | 10307243001 |
+| **NIM** | 103072430001 |
 | **Kelas** | IF-04-01 |
 
 ---
 
 ## 1. Tujuan Praktikum
-Dalam modul praktikum Jaringan Komputer Semester Genap 2025/2026, tujuan utama dari Modul 2 meliputi:
-1. Peserta dapat menyelesaikan proses instalasi alat yang diperlukan, yaitu Wireshark.
-2. Peserta mampu mengoperasikan alat Wireshark untuk menangkap serta mengidentifikasi paket data yang bersirkulasi.
+Berdasarkan modul praktikum Jaringan Komputer Semester Genap 2025/2026, tujuan dari Modul 3 adalah:
+1. Mahasiswa dapat menginvestigasi cara kerja protokol HTTP menggunakan Wireshark.
+2. Mahasiswa memahami interaksi dasar HTTP GET/Response, Conditional GET, pengambilan dokumen panjang, objek tertanam (embedded objects), dan autentikasi HTTP.
 
 ---
 
 ## 2. Dasar Teori
-### 2.1 Packet Sniffer
-Wireshark adalah perangkat lunak yang berfungsi untuk memantau komunikasi antar entitas protokol, dikenal sebagai **Packet Sniffer**. Alat ini menangkap ("Sniffs") pesan yang dikirim atau diterima oleh komputer pengguna. Sebuah Packet Sniffer beroperasi secara pasif, hanya mengobservasi pesan tanpa terlibat dalam pengiriman atau penerimaan paket tersebut.
+**HTTP (Hypertext Transfer Protocol)** adalah protokol lapisan aplikasi yang digunakan untuk mendistribusikan informasi di World Wide Web. HTTP menggunakan model request-response antara klien (browser) dan server.
 
-Komponen utama dari Packet Sniffer meliputi:
-1. **Packet Capture Library:** Yang bertugas menerima duplikat setiap frame pada lapisan link yang dikirim atau diterima oleh komputer.
-2. **Packet Analyzer:** Yang menampilkan konten lengkap dari semua field dalam pesan protokol dengan memahami struktur pesan seperti Ethernet, IP, TCP, HTTP, dan lainnya.
-
-### 2.2 Antarmuka Wireshark
-Interface Wireshark terdiri dari lima elemen pokok:
-1. **Command Menu:** Menu tarik-turun standar seperti File, Capture, dan sebagainya.
-2. **Packet Listing Window:** Ringkasan baris tunggal untuk masing-masing paket, mencakup No, Time, Source, Destination, Protocol, Info.
-3. **Packet Header Details Window:** Penjelasan mendalam mengenai paket yang dipilih, termasuk Frame, Ethernet, IP, TCP, HTTP.
-4. **Packet Contents Window:** Menunjukkan seluruh isi frame dalam bentuk ASCII dan heksadesimal.
-5. **Packet Display Filter Field:** Bidang untuk menyaring data yang ditampilkan berdasarkan protokol atau kriteria lainnya.
+Beberapa aspek penting HTTP yang dianalisis dalam modul ini:
+1. **Basic GET/Response:** Interaksi dasar dimana klien meminta dokumen dan server merespons dengan status code (misal: 200 OK).
+2. **Conditional GET:** Mekanisme caching dimana klien meminta dokumen hanya jika dokumen tersebut telah dimodifikasi sejak terakhir diakses (header `If-Modified-Since`).
+3. **HTTP & TCP:** Dokumen besar dipecah menjadi beberapa segmen TCP ("TCP segment of a reassembled PDU").
+4. **Embedded Objects:** Halaman HTML yang memuat objek lain (gambar) akan memicu multiple HTTP GET requests.
+5. **HTTP Authentication:** Mekanisme keamanan dasar dimana kredensial dikirimkan dalam header `Authorization` (biasanya encoded Base64).
 
 ---
 
 ## 3. Langkah Kerja
-Berikut merupakan langkah-langkah yang dikerjakan dalam praktikum Modul 2 (Test Run Wireshark):
+Berikut adalah langkah-langkah yang dilakukan selama praktikum Modul 3:
 
-1. **Persiapan Awal:**
-   - Pastikan perangkat terhubung ke jaringan Internet melalui Ethernet atau WiFi.
-   - Buka aplikasi browser web.
-   - Jalankan program Wireshark.
+### 3.1 Basic HTTP GET/Response Interaction
+1. Membersihkan cache browser.
+2. Menjalankan Wireshark dan mengatur filter `http`.
+3. Mengakses URL: `http://gaia.cs.umass.edu/wireshark-labs/HTTP-wireshark-file1.html`.
+4. Menghentikan capture dan menganalisis paket HTTP GET dan OK.
 
-2. **Memulai Proses Capture:**
-   - Pilih menu `Capture` kemudian `Interfaces`.
-   - Pilih interface aktif, seperti Wi-Fi atau Ethernet, lalu klik `Start`.
+### 3.2 HTTP Conditional GET/Response Interaction
+1. Membersihkan cache browser.
+2. Menjalankan Wireshark.
+3. Mengakses URL: `http://gaia.cs.umass.edu/wireshark-labs/HTTP-wireshark-file2.html`.
+4. Melakukan refresh halaman (akses URL yang sama untuk kedua kalinya).
+5. Menganalisis header `If-Modified-Since` dan respons `304 Not Modified`.
 
-3. **Membuat Traffic:**
-   - Dengan Wireshark aktif, buka URL ini di browser:
-     `http://gaia.cs.umass.edu/wireshark-labs/INTRO-wireshark-file1.html`
-   - Tunggu hingga halaman web sederhana muncul dengan pesan selamat.
+### 3.3 Retrieving Long Documents
+1. Membersihkan cache browser.
+2. Mengakses URL: `http://gaia.cs.umass.edu/wireshark-labs/HTTP-wireshark-file3.html`.
+3. Menganalisis respons TCP multi-paket untuk dokumen besar.
 
-4. **Menghentikan Capture:**
-   - Tekan tombol `Stop` (ikon kotak merah) di Wireshark.
+### 3.4 HTML Documents dengan Embedded Objects
+1. Membersihkan cache browser.
+2. Mengakses URL: `http://gaia.cs.umass.edu/wireshark-labs/HTTP-wireshark-file4.html`.
+3. Menganalisis jumlah request HTTP GET yang terjadi (HTML + Gambar).
 
-5. **Menganalisis Paket:**
-   - Ketik `http` di kolom filter lalu tekan Enter.
-   - Cari pesan **HTTP GET** yang dikirim ke server `gaia.cs.umass.edu`.
-   - Klik paket tersebut dan periksa detail protokol di jendela *Packet Header Details*.
-   - Sembunyikan detail Frame, Ethernet, IP, dan TCP dengan mengklik tanda `-` atau `>`.
-   - Perluas detail protokol HTTP dengan mengklik tanda `+` atau `v`.
-
-6. **Penutupan:**
-   - Tutup aplikasi Wireshark.
+### 3.5 HTTP Authentication
+1. Membersihkan cache browser.
+2. Mengakses URL: `http://gaia.cs.umass.edu/wireshark-labs/protected_pages/HTTP-wireshark-file5.html`.
+3. Memasukkan username: `wireshark-students` dan password: `network`.
+4. Menganalisis header `Authorization: Basic`.
 
 ---
 
 ## 4. Hasil dan Pembahasan
 
-### 4.1 Tampilan Awal Wireshark
-Di bawah ini adalah tampilan awal Wireshark ketika pertama kali dijalankan sebelum memulai capture paket. Terlihat daftar interface jaringan yang dapat dipilih.
+### 4.1 Basic HTTP GET/Response
+Pada percobaan pertama, diakses file HTML sederhana. Wireshark menangkap dua pesan utama: HTTP GET dari klien dan HTTP OK dari server.
 
-![Tampilan Awal Wireshark](assets/wireshark_home.png)
-*Gambar 1: Layar sambutan Wireshark (Welcome Screen).*
+![Basic HTTP GET](1.png)
+*Gambar 1: Tangkapan layar Wireshark menunjukkan paket HTTP GET (No. 805) dan Response 200 OK (No. 1125).*
 
-### 4.2 Pemilihan Interface Capture
-Jendela untuk memilih interface guna memulai penangkapan paket. Interface yang dipilih adalah yang sedang digunakan untuk koneksi internet.
+**Analisis:**
+- **Request:** Klien (192.168.1.8) mengirimkan metode `GET` untuk file `HTTP-wireshark-file1.html`.
+- **Response:** Server (128.119.245.12) merespons dengan Status Code `200 OK`.
+- Protokol HTTP dibawa di atas segmen TCP, datagram IP, dan frame Ethernet.
 
-![Pilih Interface](assets/wireshark_interfaces.png)
-*Gambar 2: Jendela Capture Interfaces di Wireshark.*
+### 4.2 HTTP Conditional GET
+Pada percobaan ini, dilakukan verifikasi mekanisme caching pada browser saat mengakses file yang sama berulang kali.
 
-### 4.3 Hasil Penangkapan Paket
-Setelah mengunjungi URL `http://gaia.cs.umass.edu/wireshark-labs/INTRO-wireshark-file1.html` dan menghentikan capture, berikut daftar paket yang berhasil ditangkap. Meskipun hanya membuka satu halaman web, banyak protokol berjalan di belakang layar.
+![Conditional GET](2.png)
+*Gambar 2: Tangkapan layar Wireshark menunjukkan request HTTP GET untuk file2.html.*
 
-![Hasil Capture](assets/wireshark_packet_list.png)
-*Gambar 3: Daftar paket (Packet List) setelah capture dihentikan.*
+**Analisis:**
+- Pada request kedua (No. 8978), klien mengirimkan header `If-Modified-Since`.
+- Jika file belum berubah, server akan merespons dengan `304 Not Modified` (terlihat pada No. 9011 menunjukkan respons 200 OK karena ini adalah pengambilan pertama/bersih, namun pada langkah refresh akan muncul 304).
 
-### 4.4 Penyaringan Protokol HTTP
-Untuk mempermudah analisis, terapkan filter dengan kata kunci `http` pada display filter. Hanya paket terkait protokol HTTP yang akan muncul.
+### 4.3 Retrieving Long Documents
+Mengakses dokumen yang cukup panjang sehingga tidak muat dalam satu paket MTU.
 
-![Filter HTTP](assets/wireshark_http_filter.png)
-*Gambar 4: Hasil penyaringan paket dengan ekspresi "http".*
+![Long Document](3.png)
+*Gambar 3: Tangkapan layar Wireshark menunjukkan segmentasi TCP (Continuation).*
 
-### 4.5 Analisis Rinci Paket HTTP GET
-Di sini, paket **HTTP GET** yang dikirim dari klien ke server `gaia.cs.umass.edu` dipilih. Detail protokol disajikan dalam struktur hierarki.
+**Analisis:**
+- Respons untuk `HTTP-wireshark-file3.html` dipecah oleh lapisan transport.
+- Paket No. 18601 dan 18603 ditandai sebagai `Continuation`, yang merupakan bagian dari satu HTTP response yang sama yang direassemble oleh Wireshark.
 
-![Detail Paket HTTP](assets/wireshark_http_detail.png)
-*Gambar 5: Rincian paket HTTP GET dengan protokol lain disembunyikan.*
+### 4.4 HTML Documents dengan Embedded Objects
+Mengakses halaman HTML yang mengandung objek gambar tambahan di dalamnya.
 
-**Penjelasan Rinci Paket:**
-- **Frame:** Data fisik mengenai paket yang ditangkap.
-- **Ethernet II:** Alamat MAC pengirim dan penerima.
-- **Internet Protocol Version 4:** Alamat IP pengirim dan penerima.
-- **Transmission Control Protocol:** Port pengirim dan penerima, plus nomor urut (sequence number).
-- **Hypertext Transfer Protocol:** Metode permintaan (GET), host, dan user-agent.
+![Embedded Objects](4.png)
+*Gambar 4: Tangkapan layar Wireshark menunjukkan multiple HTTP GET requests.*
 
-### 4.6 Isi Paket (Hex & ASCII)
-Jendela bawah menampilkan konten mentah paket dalam format heksadesimal dan ASCII.
+**Analisis:**
+- Terlihat satu GET untuk `file4.html` (No. 33763).
+- Diikuti oleh GET otomatis untuk gambar `pearson.png` (No. 33794) dan `8E_cover_small.jpg` (No. 33850). Ini membuktikan browser melakukan request terpisah untuk setiap objek yang tertanam di HTML.
 
-![Konten Paket](assets/wireshark_packet_bytes.png)
-*Gambar 6: Tampilan Packet Bytes dalam format Hex dan ASCII.*
+### 4.5 HTTP Authentication
+Mengakses halaman yang dilindungi oleh mekanisme autentikasi dasar.
+
+![HTTP Authentication](5.png)
+*Gambar 5: Tangkapan layar Wireshark menunjukkan proses autentikasi.*
+
+**Analisis:**
+- Klien melakukan GET ke `protected_pages/HTTP-wireshark-file5.html`.
+- Terlihat respons `401 Unauthorized` (No. 54244) saat pertama kali akses tanpa kredensial.
+- Setelah memasukkan username/password, klien mengirim GET kembali (No. 54603) yang menyertakan header `Authorization: Basic`.
 
 ---
 
 ## 5. Kesimpulan
-Dari praktikum Modul 2 ini, dapat ditarik kesimpulan sebagai berikut:
-1. **Wireshark** telah berhasil dipasang dan diterapkan sebagai alat *packet sniffer* untuk menangkap trafik jaringan.
-2. Wireshark dilengkapi dengan komponen kunci seperti *Packet Listing*, *Packet Details*, dan *Packet Bytes* yang memfasilitasi analisis protokol multilayer.
-3. Fitur **Display Filter** sangat membantu dalam menyaring paket tertentu, misalnya hanya trafik HTTP, dari sekian banyak paket yang ditangkap.
-4. Praktikum ini menggambarkan bahwa aktivitas sederhana seperti membuka halaman web melibatkan berbagai protokol lapisan bawah (Ethernet, IP, TCP) sebelum sampai ke lapisan aplikasi (HTTP).
-5. Penguasaan interface Wireshark merupakan fondasi penting untuk modul berikutnya seperti HTTP, DNS, TCP, UDP, dan lainnya.
+Berdasarkan praktikum Modul 3 ini, dapat disimpulkan bahwa:
+1. **Wireshark** efektif untuk menganalisis transaksi HTTP secara detail (header, method, status code).
+2. **HTTP bersifat stateless**, namun mekanisme caching (Conditional GET) membantu efisiensi jaringan.
+3. **TCP** bertanggung jawab memecah data besar menjadi segmen-segmen (fragmentasi di lapisan transport) untuk dokumen HTML yang panjang.
+4. **Embedded Objects** menyebabkan terjadinya multiple HTTP request untuk satu halaman web yang kompleks.
+5. **HTTP Basic Authentication** tidak aman karena kredensial hanya di-encode (Base64) dan dapat dengan mudah dibaca oleh packet sniffer jika tidak menggunakan enkripsi lapisan bawah (HTTPS).
 
 ---
 
