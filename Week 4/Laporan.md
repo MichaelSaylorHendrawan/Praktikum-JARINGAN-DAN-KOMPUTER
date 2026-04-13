@@ -17,101 +17,102 @@
 ---
 
 ## B. Pengantar
-DNS (Domain Name System) adalah protokol krusial di internet yang berfungsi sebagai "buku telepon", menerjemahkan nama host yang mudah diingat (seperti `mit.edu`) menjadi alamat IP yang dipahami oleh mesin. Praktikum ini berfokus pada sisi klien, di mana klien mengirimkan permintaan ke resolver (server DNS lokal) dan menerima jawaban tanpa perlu memproses hirarki DNS yang kompleks secara manual.
+DNS (Domain Name System) adalah protokol lapisan aplikasi yang berfungsi menerjemahkan nama domain (hostname) yang mudah diingat manusia menjadi alamat IP yang dapat diproses oleh mesin. Praktikum ini menganalisis bagaimana klien melakukan permintaan resolusi nama, baik melalui resolver lokal maupun server DNS spesifik, serta bagaimana record tersebut disimpan dalam cache sistem operasi.
 
 ---
 
 ## C. Hasil dan Pembahasan
 
 ### 1. Nslookup
-Perintah `nslookup` digunakan untuk melakukan query ke DNS server. Alat ini sangat berguna untuk mendiagnosis masalah resolusi nama dan melihat informasi record tertentu pada sebuah domain.
+Perintah `nslookup` digunakan untuk melakukan kueri langsung ke server DNS guna mendapatkan informasi pemetaan IP atau record lainnya.
 
 #### a. nslookup www.mit.edu
 ![nslookup www.mit.edu](Asset/1.png)
 **Analisis:**
-- Permintaan ditangani oleh server DNS lokal dengan alamat `fe80::1` (gpon.net).
-- Hasil menunjukkan bahwa `www.mit.edu` adalah sebuah alias (CNAME) yang merujuk pada `www.mit.edu.edgekey.net` dan kemudian ke `e9566.dscb.akamaiedge.net`.
-- Alamat IPv4 yang didapatkan untuk host tersebut adalah **23.0.173.210**.
+- Permintaan dilayani oleh server lokal `gpon.net` dengan alamat IPv6 `fe80::1`.
+- Hasil menunjukkan `www.mit.edu` adalah alias (CNAME) dari `www.mit.edu.edgekey.net`, yang kemudian merujuk ke `e9566.dscb.akamaiedge.net`.
+- Alamat IPv4 akhirnya adalah **23.0.173.210**.
 
 #### b. nslookup –type=NS mit.edu
 ![nslookup –type=NS mit.edu](Asset/2.png)
 **Analisis:**
-- Perintah ini secara spesifik meminta **Name Server (NS)** record dari MIT.
-- Terdapat beberapa server otoritatif yang mengelola domain ini, seperti `asia1.akam.net`, `ns1-173.akam.net`, dan lainnya. Status "Non-authoritative answer" menunjukkan data diambil dari cache resolver lokal.
+- Kueri tipe **NS (Name Server)** mencari server otoritatif domain MIT.
+- Terdapat banyak nameserver yang mengelola domain ini (misal: `asia1.akam.net`, `ns1-173.akam.net`).
 
-#### c. Query ke DNS Server Spesifik (Google DNS)
-![Query ke DNS Server Tertentu](Asset/3.png)
+#### c. Query ke DNS Server Tertentu (Google DNS)
+![Query DNS Google](Asset/3.png)
 **Analisis:**
-- Pada perintah `nslookup mit.edu 8.8.8.8`, query dipaksa untuk dikirim ke server Google (`8.8.8.8`), bukan ke server DNS default.
-- Hasil menunjukkan alamat IP MIT dari perspektif server Google adalah **23.15.150.186**.
+- Kueri `nslookup mit.edu 8.8.8.8` memaksa permintaan dikirim langsung ke Google Public DNS.
+- Terdeteksi alamat IPv4 MIT dari server ini adalah **23.15.150.186**.
 
 #### d. Query Alamat IP Server Web di Asia (SNU)
-*(Tertera pada bagian bawah Screenshot 2026-04-13 205059.png)*
+![Query SNU Asia](Asset/webasia.png)
 **Analisis:**
-- Melakukan query untuk `en.snu.ac.kr` (Seoul National University).
-- Hostname tersebut memiliki alias `new.snu.ac.kr` dengan alamat IPv4 **147.46.10.129**.
+- Melakukan kueri untuk `en.snu.ac.kr`.
+- Hostname ini merujuk pada alias `new.snu.ac.kr` dengan alamat IP **147.46.10.129**.
 
 #### e. Query DNS Otoritatif (NS Record - ox.ac.uk)
-![Query DNS Otoritatif](Asset/5.png)
+![Query NS Oxford](Asset/4.png)
 **Analisis:**
-- Mencari record NS untuk University of Oxford (`ox.ac.uk`).
-- Domain ini dikelola oleh 6 nameserver otoritatif, mulai dari `dns0.ox.ac.uk` hingga `auth6.dns.ox.ac.uk`.
+- Menemukan nameserver otoritatif University of Oxford, seperti `dns0.ox.ac.uk` hingga `auth6.dns.ox.ac.uk`.
 
 #### f. Query MX Record (Mail Server - ox.ac.uk)
-![Query MX Record](Asset/6.png)
+![Query MX Oxford](Asset/5.png)
 **Analisis:**
-- Parameter `-type=MX` digunakan untuk mencari server penanganan email.
-- Didapatkan server mail `oxforduni.in.tmes.trendmicro.eu` dengan **preference = 4**. Angka ini menunjukkan tingkat prioritas server tersebut dalam menerima email masuk.
+- Kueri tipe **MX** mencari server email. Teridentifikasi server `oxforduni.in.tmes.trendmicro.eu` dengan nilai **preference = 4**.
 
 ---
 
 ### 2. Ipconfig
-Perintah `ipconfig` memberikan gambaran mengenai konfigurasi jaringan yang terpasang pada komputer klien.
+`ipconfig` menyajikan detail konfigurasi antarmuka jaringan dan pengelolaan cache DNS pada host.
 
 #### a. ipconfig /all
-![ipconfig /all](Asset/7.png)
+![ipconfig all 1](Asset/6.png)
+![ipconfig all 2](Asset/7.png)
+![ipconfig all 3](Asset/8.png)
 **Analisis:**
-- **Host Name:** Laptop bernama `Owen`.
-- **Physical Address (MAC):** `08-8F-C3-46-69-B2`.
-- **IPv4 Address:** `192.168.56.1` (VirtualBox Adapter).
-- Informasi ini penting untuk mengetahui konfigurasi default gateway dan server DNS yang digunakan oleh sistem saat ini.
+- **Host Name:** Owen.
+- **Ethernet Adapter:** Killer E2600.
+- **Wi-Fi Adapter:** Memiliki IPv4 **192.168.1.8** dengan DNS Servers **1.1.1.1** dan **1.0.0.1** (Cloudflare DNS).
+
+#### b. ipconfig /displaydns
+![displaydns 1](Asset/9.png)
+![displaydns 2](Asset/10.png)
+![displaydns 3](Asset/11.png)
+**Analisis:**
+- Perintah ini menampilkan isi cache DNS lokal.
+- Terlihat record seperti `telemetry-incoming.r53-2.services.mozilla.com` (Tipe 1/A) dan `Owen.mshome.net` (Tipe 1).
+- Gambar 11 menunjukkan **PTR Record** (Tipe 12) untuk reverse lookup dan **AAAA Record** (Tipe 28) untuk alamat IPv6.
 
 ---
 
 ### 3. Tracing DNS dengan Wireshark
 
-#### a. Tracing DNS Dasar (www.mit.edu)
-![Tracing DNS 1](Asset/15.png)
-![Tracing DNS 2](Asset/16.png)
+#### a. Tracing DNS Dasar (Cloudflare DNS)
+![Wireshark Tracing 1](Asset/12.png)
+![Wireshark Tracing 2](Asset/13.png)
+**Analisis:**
+- Klien (192.168.1.8) mengirim query ke **1.1.1.1** via protokol **UDP Port 53**.
+- Gambar 13 menunjukkan rincian respons DNS (Transaction ID: `0x42ab`) untuk `www.google.co.id` tipe AAAA dengan 1 jawaban (Answer RRs: 1).
 
-**Pertanyaan dan Jawaban:**
-1. **Pesan dikirim melalui UDP atau TCP?**
-   > Pesan dikirim melalui protokol **UDP**, yang merupakan protokol standar untuk DNS karena lebih cepat dan efisien untuk query singkat.
-2. **Apa port tujuan pada pesan permintaan? Port sumber pada pesan balasan?**
-   > Port tujuan permintaan adalah **53**. Port sumber pada balasan juga adalah **53**.
-3. **Apa alamat IP tujuannya? Apakah sama dengan DNS server lokal?**
-   > IP tujuan adalah **192.168.110.1**. Ya, ini sesuai dengan default gateway/DNS server lokal pada konfigurasi jaringan yang digunakan (192.168.110.6 mengirim ke 192.168.110.1).
-4. **Apa tipe pesan tersebut? Apakah mengandung jawaban?**
-   > Tipe pesan pada Query (Frame 269) adalah **Tipe A** (Host Address). Pesan query tidak mengandung jawaban (Answer RRs: 0).
-5. **Berapa banyak jawaban pada pesan balasan? Apa isinya?**
-   > Terdapat **3 jawaban** (Frame 307). Isinya adalah dua alias (CNAME) dan satu alamat IPv4 (**23.217.163.122**).
+#### b. Tracing DNS Dasar (mit.edu)
+![Wireshark mit 1](Asset/15.png)
+![Wireshark mit 2](Asset/16.png)
+**Analisis:**
+- Klien (192.168.110.6) mengirim kueri ke server lokal **192.168.110.1**.
+- Terdapat **3 Jawaban** pada respons (Gambar 16), yang terdiri dari dua CNAME record dan satu record Tipe A (23.217.163.122).
 
-#### b. Query ke DNS Server Spesifik (www.aiit.or.kr via 8.8.8.8)
-![Tracing Spesifik 1](Asset/17.png)
-![Tracing Spesifik 2](Asset/18.png)
-
-**Analisis Wireshark:**
-1. **Ke alamat IP manakah pesan dikirim?**
-   > Dikirim ke **8.8.8.8**. Ini bukan DNS lokal default, melainkan DNS publik Google yang dipanggil secara eksplisit melalui nslookup.
-2. **Apa tipe pesan dan apakah ada jawaban pada query?**
-   > Tipe pesan adalah **A (IPv4)**. Query (Frame 138) tidak membawa jawaban.
-3. **Berapa banyak jawaban pada balasan? Apa isinya?**
-   > Terdapat **2 jawaban** (Frame 149) berupa record tipe A dengan alamat IP **172.67.152.120** dan **104.21.74.8**.
+#### c. Query ke DNS Server Spesifik (aiit.or.kr via 8.8.8.8)
+![Wireshark aiit 1](Asset/17.png)
+![Wireshark aiit 2](Asset/18.png)
+**Analisis:**
+- Query diarahkan ke **8.8.8.8** (Google DNS).
+- Respons (Gambar 18) memberikan **2 Jawaban** record Tipe A: **172.67.152.120** dan **104.21.74.8**.
 
 ---
 
 ## D. Kesimpulan
-Berdasarkan praktikum Modul 4, dapat disimpulkan bahwa DNS bekerja pada lapisan aplikasi menggunakan protokol transport UDP melalui port 53. DNS memungkinkan pengguna mengakses sumber daya internet menggunakan nama yang intuitif. Melalui analisis Wireshark dan nslookup, kita dapat melihat bahwa satu nama domain seringkali memiliki banyak alias (CNAME) dan dikelola oleh beberapa nameserver otoritatif untuk menjaga ketersediaan layanan.
+DNS merupakan fondasi penting dalam navigasi internet yang memungkinkan pemetaan hostname ke alamat IP secara efisien. Melalui praktikum ini, dapat dibuktikan bahwa DNS menggunakan protokol UDP port 53 untuk kecepatan kueri. Penggunaan `nslookup` mempermudah identifikasi berbagai tipe record (A, CNAME, NS, MX), sementara `ipconfig` membantu melihat konfigurasi DNS yang aktif dan pengelolaan cache pada sisi klien.
 
 ---
 
